@@ -6,7 +6,6 @@ import { store } from "./app/store";
 import { Provider } from "react-redux";
 
 import "bootstrap/dist/css/bootstrap.min.css";
-import Header from "./pages/partials/Header";
 
 ReactDOM.render(
   <React.StrictMode>
