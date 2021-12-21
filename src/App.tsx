@@ -1,13 +1,22 @@
 import React from "react";
 import Counter from "./features/counter/Counter";
 import Login from "./pages/Login/Login";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
+import Home from "./pages/Home/Home";
+import Header from "./pages/partials/Header";
 
 function App(): JSX.Element {
   return (
-    <div className="App">
-      <Counter />
-      <Login />
-    </div>
+    <>
+      <BrowserRouter>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/counter" element={<Counter />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }
 
