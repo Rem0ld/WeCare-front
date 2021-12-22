@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { Button } from "react-bootstrap";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import Auth from "../../services/Auth";
 import {
   decrement,
   increment,
@@ -63,6 +65,14 @@ export default function Counter(): JSX.Element {
         >
           Add If Odd
         </button>
+
+        <Button
+          onClick={() => {
+            Auth.fetch("/api/doctors");
+          }}
+        >
+          get patient
+        </Button>
       </div>
     </div>
   );

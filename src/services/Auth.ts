@@ -35,17 +35,29 @@ export default class Auth {
   }
 
   static async fetch(url: string) {
-    // TODO: need to implement a route to refresh token
-    const token = localStorage.getItem('token')
-    const options: any = {
-      "Content-Authorization": `Bearer ${token}`
+    try {
+      // TODO: need to implement a route to refresh token
+      const token = localStorage.getItem('token')
+      const options: any = {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        "Content-Authorization": `Bearer ${token}`
+      }
+      const response = await window.fetch(`http://localhost:3000${url}`, options)
+      const result = await response.json()
+
+      console.log(result)
+      return result
+
+    } catch (error: any) {
+      throw new Error(error)
     }
-    return window.fetch(url, options)
+
   }
 
-  isTokenExpired(token: string) {
+  static async isTokenExpired(token: string) {
     try {
-      const decoded: any = decode(token)
+      const decoded: any = await decode(token)
       if (decoded.exp < Date.now() / 1000) {
         // Checking if token is expired. N
         return true
@@ -55,4 +67,10 @@ export default class Auth {
       return false
     }
   }
+
+  static async loggedIn() {
+    const token = localStorage.getItem('token')
+    return !!token && !this.isTokenExpired(token)
+  }
+
 }
