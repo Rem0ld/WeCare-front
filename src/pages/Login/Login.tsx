@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Auth from "../../services/Auth";
+import { useAppDispatch } from '../../redux/hooks';
+import { login } from "../../redux/slices/userSlice";
 
 const Login = () => {
+  const dispatch = useAppDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("patient");
@@ -12,6 +15,9 @@ const Login = () => {
   const onSubmit = async () => {
     const result = await Auth.login(email, password, role);
     console.log({ result });
+    if(result === 'success'){
+      dispatch(login({ user: { email: email }, isLogged: true}))
+    }
   };
 
   return (
