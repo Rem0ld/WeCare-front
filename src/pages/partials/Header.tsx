@@ -1,8 +1,14 @@
 import React from "react";
 import { Navbar, Container, Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { MdLogout } from 'react-icons/md';
+import Auth from "../../services/Auth";
 
 const Header = () => {
+  const onLogout = () => {
+    Auth.logout();
+  }
+
   return (
     <div>
       <Navbar bg="dark" variant="dark">
@@ -14,6 +20,8 @@ const Header = () => {
             </Link>
             <Link to={"/login"} className="no-underline text-gray-400">
               login{" "}
+            </Link>
+            <Link to={""} onClick={onLogout}><MdLogout />
             </Link>
           </Nav>
         </Container>
