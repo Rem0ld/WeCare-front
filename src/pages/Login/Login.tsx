@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Auth from "../../services/Auth";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const location: any = useLocation();
+
+  const from = location.state?.from?.pathname || "/";
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("patient");
@@ -11,12 +16,16 @@ const Login = () => {
   // TODO: need to implement some sort of validation
   const onSubmit = async () => {
     const result = await Auth.login(email, password, role);
-    console.log({ result });
+    // TODO: check with back if synchronized
+    if (result === "success") {
+      navigate(from, { replace: true });
+    }
   };
 
   return (
     <div className="flex justify-center p-10">
       <Form className="w-96">
+        {from && <div className="mb-10">You should be connected to go on {from}</div>}
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
           <Form.Control

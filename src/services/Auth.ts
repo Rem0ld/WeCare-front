@@ -26,8 +26,8 @@ export default class Auth {
 
     localStorage.removeItem("access_token");
   }
-  
-  static async register(newUser: User){
+
+  static async register(newUser: User) {
     const body = JSON.stringify(newUser)
 
     try {
@@ -61,11 +61,13 @@ export default class Auth {
       });
       const result: Result = await response.json();
 
-      if (result) {
-        localStorage.setItem("access_token", result.accessToken);
-        localStorage.setItem("refresh_token", result.refreshToken);
-        return "success";
+      if (!result.accessToken) {
+        throw result
       }
+
+      localStorage.setItem("access_token", result.accessToken);
+      localStorage.setItem("refresh_token", result.refreshToken);
+      return "success";
     } catch (error) {
       console.error(error);
       return "error";
@@ -107,8 +109,8 @@ export default class Auth {
     }
   }
 
-  static async loggedIn() {
+  static loggedIn() {
     const token = localStorage.getItem("access_token");
-    return !!token && !this.isTokenExpired(token);
+    return token;
   }
 }

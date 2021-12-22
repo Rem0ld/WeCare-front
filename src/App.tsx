@@ -5,6 +5,7 @@ import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import Header from "./pages/partials/Header";
 import Register from "./pages/Register/Register";
+import RequireAuth from "./components/RequireAuth/RequireAuth";
 
 function App(): JSX.Element {
   return (
@@ -13,9 +14,16 @@ function App(): JSX.Element {
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/counter" element={<Counter />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route
+            path="/counter"
+            element={
+              <RequireAuth>
+                <Counter />
+              </RequireAuth>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </>
