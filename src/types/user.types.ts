@@ -1,4 +1,5 @@
-export type user = {
+export type User = {
+    id?: number,
     email: string,
     password: string,
     accessToken?: string,
@@ -8,7 +9,7 @@ export type user = {
     role?: string,
 }
 
-export type userStore = {
-    user: user | null,
+export type UserStore = {
+    user: User | null,
     isLogged: boolean
 }

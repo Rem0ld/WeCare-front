@@ -1,5 +1,5 @@
-import decode from "jwt-decode";
-import { user } from "../types/user.types";
+import decode from 'jwt-decode'
+import { User } from '../types/user.types'
 
 interface Result {
   accessToken: string;
@@ -26,9 +26,9 @@ export default class Auth {
 
     localStorage.removeItem("access_token");
   }
-
-  static async register(newUser: user) {
-    const body = JSON.stringify(newUser);
+  
+  static async register(newUser: User){
+    const body = JSON.stringify(newUser)
 
     try {
       await fetch(`${this.url}/api/auth/register`, {

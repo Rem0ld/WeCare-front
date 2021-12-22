@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import Auth from "../../services/Auth";
-import { user } from "../../types/user.types";
+import { User } from "../../types/user.types";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -11,7 +10,7 @@ const Register = () => {
   const [numSs, setNumSs] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("patient");
-  const user: user = {
+  const user: User = {
     email: email,
     password: password,
     firstname: firstname,
