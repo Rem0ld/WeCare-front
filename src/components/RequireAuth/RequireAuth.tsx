@@ -5,10 +5,9 @@ import Auth from "../../services/Auth";
 
 const RequireAuth = ({ children }: { children: ReactElement }) => {
   const location = useLocation();
-  // const user = useAppSelector(state => state.user)
+  const user = useAppSelector((state) => state.user);
 
-  // user.isLogged
-  if (!Auth.loggedIn()) {
+  if (!user.isLogged) {
     return <Navigate to="/login" state={{ from: location }} />;
   }
   return <>{children}</>;

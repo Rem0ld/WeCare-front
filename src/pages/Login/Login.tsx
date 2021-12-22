@@ -22,6 +22,7 @@ const Login = () => {
     console.log({ result });
     if (result === "success") {
       dispatch(login({ user: { email: email }, isLogged: true }));
+      navigate(from, { replace: true });
     }
   };
 
