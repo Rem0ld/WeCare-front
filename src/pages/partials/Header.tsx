@@ -3,10 +3,14 @@ import { Navbar, Container, Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { MdLogout } from 'react-icons/md';
 import Auth from "../../services/Auth";
+import { useAppDispatch } from "../../redux/hooks";
+import { logout } from "../../redux/slices/userSlice";
 
 const Header = () => {
+  const dispatch = useAppDispatch();
   const onLogout = () => {
     Auth.logout();
+    dispatch(logout({}))
   }
 
   return (

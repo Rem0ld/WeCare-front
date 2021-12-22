@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Auth from "../../services/Auth";
+import { useAppDispatch } from "../../redux/hooks";
+import { login } from "../../redux/slices/userSlice";
 
 const Login = () => {
   const navigate = useNavigate();
   const location: any = useLocation();
+  const dispatch = useAppDispatch();
 
   const from = location.state?.from?.pathname || "/";
 
@@ -16,9 +19,9 @@ const Login = () => {
   // TODO: need to implement some sort of validation
   const onSubmit = async () => {
     const result = await Auth.login(email, password, role);
-    // TODO: check with back if synchronized
+    console.log({ result });
     if (result === "success") {
-      navigate(from, { replace: true });
+      dispatch(login({ user: { email: email }, isLogged: true }));
     }
   };
 
