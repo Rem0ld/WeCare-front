@@ -1,34 +1,27 @@
-import decode from 'jwt-decode'
-import { User } from '../types/user.types'
+import decode from "jwt-decode";
+import { User } from "../types/user.types";
+import Cookies from "js-cookie";
 
 interface Result {
+  user: User;
   accessToken: string;
-  refreshToken: string;
 }
 export default class Auth {
   static url = "http://localhost:3000";
 
   static async logout() {
-    localStorage.removeItem("refresh_token");
-    const accessToken = localStorage.getItem("access_token");
     try {
-      await fetch(`${this.url}/api/auth/logout`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ accessToken }),
-      });
+      const response = await this.fetch(`${this.url}/api/auth/logout`, {})
+      console.log(response)
     } catch (error) {
       console.error(error);
-      return "error";
+    } finally {
+      localStorage.removeItem('accessToken')
     }
-
-    localStorage.removeItem("access_token");
   }
 
   static async register(newUser: User) {
-    const body = JSON.stringify(newUser)
+    const body = JSON.stringify(newUser);
 
     try {
       await fetch(`${this.url}/api/auth/register`, {
@@ -59,37 +52,47 @@ export default class Auth {
         },
         body,
       });
-      const result: Result = await response.json();
+      const result = await response.json();
+      localStorage.setItem("accessToken", result.accessToken)
 
-      if (!result.accessToken) {
-        throw result
-      }
-
-      localStorage.setItem("access_token", result.accessToken);
-      localStorage.setItem("refresh_token", result.refreshToken);
-      return "success";
+      return result;
     } catch (error) {
       console.error(error);
       return "error";
     }
   }
 
-  static async fetch(url: string) {
+  static async fetch(url: string, body: any) {
+    const accessToken = localStorage.getItem("accessToken");
+    console.log("🚀 ~ file: Auth.ts ~ line 67 ~ Auth ~ fetch ~ accessToken", accessToken)
+
+    // Checking if we should refreshToken
+    const accessTokenExpiresIn: any = decode(accessToken as string);
+    const oneMin = 1000 * 60;
+    const shouldRefresh =
+      accessTokenExpiresIn.exp - (new Date().getTime() / 1000) < oneMin;
+
+    console.log("🚀 ~ file: Auth.ts ~ line 73 ~ Auth ~ fetch ~ shouldRefresh", shouldRefresh)
+    if (shouldRefresh) {
+      await Auth.refreshAccessToken();
+    }
+
     try {
-      // TODO: need to implement a route to refresh token
-      const token = localStorage.getItem("access_token");
       const headers: any = {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${accessToken}`,
       };
 
-      const response = await fetch(`http://localhost:3000${url}`, {
+      const response = await fetch(`${this.url}${url}`, {
+        mode: 'cors',
+        credentials: "include",
         headers,
+        body: body ? JSON.stringify(body) : null
       });
       const result = await response.json();
 
-      console.log(result);
+      // A new access token is set in cookies when request is made
       return result;
     } catch (error: any) {
       throw new Error(error);
@@ -100,7 +103,7 @@ export default class Auth {
     try {
       const decoded: { role: string; sub: string; exp: number } = decode(token);
       if (decoded.exp < Date.now() / 1000) {
-        // Checking if token is expired. N
+        // Checking if token is expired.
         return true;
       }
       return false;
@@ -109,8 +112,27 @@ export default class Auth {
     }
   }
 
-  static loggedIn() {
-    const token = localStorage.getItem("access_token");
-    return token;
+  static async refreshAccessToken() {
+    const accessToken = localStorage.getItem("accessToken")
+    console.log("🚀 ~ file: Auth.ts ~ line 121 ~ Auth ~ refreshAccessToken ~ accessToken", accessToken)
+
+    try {
+      const response = await fetch(`${Auth.url}/api/auth/refresh-token`, {
+        method: "POST",
+        body: JSON.stringify({ accessToken })
+      })
+      const result = await response.json();
+
+      if (!result) {
+        throw new Error(result);
+      }
+
+      console.log(result)
+      localStorage.setItem("accessToken", result.accessToken)
+      return result;
+
+    } catch (error) {
+      console.error(error)
+    }
   }
 }

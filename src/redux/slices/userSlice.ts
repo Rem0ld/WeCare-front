@@ -4,7 +4,9 @@ import { User, UserStore } from '../../types/user.types';
 
 const initialState: UserStore = {
     user: {},
-    isLogged: false
+    isLogged: false,
+    accessToken: "",
+    role: ""
 }
 
 export const userSlice = createSlice({
@@ -12,16 +14,20 @@ export const userSlice = createSlice({
     initialState,
     reducers: {
         login: (state, action) => {
-            state.isLogged = true,
-            state.user = action.payload
+            state.isLogged = true;
+            state.user = action.payload.user;
+            state.accessToken = action.payload.accessToken;
+            state.role = action.payload.role;
         },
-        logout: (state, action) => {
-            state.isLogged = false,
-            state.user = {}
+        logout: () => {
+            return initialState;
+        },
+        refreshToken: (state, action) => {
+            state.accessToken = action.payload
         }
     }
 })
 
-export const { login, logout } = userSlice.actions;
+export const { login, logout, refreshToken } = userSlice.actions;
 
 export default userSlice.reducer;

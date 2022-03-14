@@ -1,17 +1,19 @@
 import React from "react";
 import { Navbar, Container, Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { MdLogout } from 'react-icons/md';
+import { MdLogout } from "react-icons/md";
 import Auth from "../../services/Auth";
-import { useAppDispatch } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { logout } from "../../redux/slices/userSlice";
 
 const Header = () => {
   const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.user);
+
   const onLogout = () => {
     Auth.logout();
-    dispatch(logout({}))
-  }
+    dispatch(logout());
+  };
 
   return (
     <div>
@@ -19,14 +21,17 @@ const Header = () => {
         <Container>
           <Navbar.Brand href="/">WeCare</Navbar.Brand>
           <Nav className="me-auto space-x-5">
-            <Link to={"/counter"} className="no-underline text-gray-400  ">
-              Counter{" "}
+            <Link to={"/login/patient"} className="no-underline text-gray-400">
+              Login patient
             </Link>
-            <Link to={"/login"} className="no-underline text-gray-400">
-              login{" "}
+            <Link to={"/login/doctor"} className="no-underline text-gray-400">
+              Login docteur
             </Link>
-            <Link to={""} onClick={onLogout}><MdLogout />
-            </Link>
+            {user.isLogged && (
+              <Link to={""} onClick={onLogout}>
+                <MdLogout />
+              </Link>
+            )}
           </Nav>
         </Container>
       </Navbar>

@@ -1,14 +1,22 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useEffect } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { useAppSelector } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { refreshToken } from "../../redux/slices/userSlice";
 import Auth from "../../services/Auth";
 
-const RequireAuth = ({ children }: { children: ReactElement }) => {
+const RequireAuth = ({
+  role,
+  children,
+}: {
+  role: "patient" | "admin" | "doctor";
+  children: ReactElement;
+}) => {
   const location = useLocation();
-  const user = useAppSelector((state) => state.user);
+  const state = useAppSelector((state) => state);
+  const dispatch = useAppDispatch();
 
-  if (!user.isLogged) {
-    return <Navigate to="/login" state={{ from: location }} />;
+  if (!state?.user.isLogged || state?.user?.role !== role) {
+    return <Navigate to={`/login/${role}`} state={{ from: location }} />;
   }
   return <>{children}</>;
 };

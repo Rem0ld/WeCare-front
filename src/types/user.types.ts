@@ -12,4 +12,6 @@ export type User = {
 export type UserStore = {
     user: User | null,
     isLogged: boolean
+    accessToken: string
+    role: string
 }

@@ -6,6 +6,8 @@ import Home from "./pages/Home/Home";
 import Header from "./pages/partials/Header";
 import Register from "./pages/Register/Register";
 import RequireAuth from "./components/RequireAuth/RequireAuth";
+import HomePatient from "./pages/HomePatient/HomePatient";
+import HomeDoctor from "./pages/HomeDoctor/HomeDoctor";
 
 function App(): JSX.Element {
   return (
@@ -14,13 +16,21 @@ function App(): JSX.Element {
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="login/:role" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route
-            path="/counter"
+            path="/patient"
             element={
-              <RequireAuth>
-                <Counter />
+              <RequireAuth role={"patient"}>
+                <HomePatient />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/doctor"
+            element={
+              <RequireAuth role={"doctor"}>
+                <HomeDoctor />
               </RequireAuth>
             }
           />
