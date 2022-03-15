@@ -29,6 +29,7 @@ export default class Auth {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body,
       });
     } catch (error) {
@@ -50,9 +51,12 @@ export default class Auth {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body,
       });
       const result = await response.json();
+      const accessToken = Cookies.get("accessToken")
+      console.log(accessToken)
       localStorage.setItem("accessToken", result.accessToken)
 
       return result;
@@ -64,18 +68,6 @@ export default class Auth {
 
   static async fetch(url: string, body: any) {
     const accessToken = localStorage.getItem("accessToken");
-    console.log("🚀 ~ file: Auth.ts ~ line 67 ~ Auth ~ fetch ~ accessToken", accessToken)
-
-    // Checking if we should refreshToken
-    const accessTokenExpiresIn: any = decode(accessToken as string);
-    const oneMin = 1000 * 60;
-    const shouldRefresh =
-      accessTokenExpiresIn.exp - (new Date().getTime() / 1000) < oneMin;
-
-    console.log("🚀 ~ file: Auth.ts ~ line 73 ~ Auth ~ fetch ~ shouldRefresh", shouldRefresh)
-    if (shouldRefresh) {
-      await Auth.refreshAccessToken();
-    }
 
     try {
       const headers: any = {
@@ -91,6 +83,11 @@ export default class Auth {
         body: body ? JSON.stringify(body) : null
       });
       const result = await response.json();
+      const cookAccessToken = Cookies.get("accessToken");
+
+      if (cookAccessToken && cookAccessToken !== accessToken) {
+        localStorage.setItem("accessToken", cookAccessToken)
+      }
 
       // A new access token is set in cookies when request is made
       return result;
