@@ -34,6 +34,14 @@ function App(): JSX.Element {
               </RequireAuth>
             }
           />
+          <Route
+            path="/appointments"
+            element={
+              <RequireAuth role={"doctor"}>
+                <div>Appointments</div>
+              </RequireAuth>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </>

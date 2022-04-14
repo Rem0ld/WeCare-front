@@ -15,6 +15,8 @@ const RequireAuth = ({
   const state = useAppSelector((state) => state);
   const dispatch = useAppDispatch();
 
+  console.log(state.user);
+
   if (!state?.user.isLogged || state?.user?.role !== role) {
     return <Navigate to={`/login/${role}`} state={{ from: location }} />;
   }
